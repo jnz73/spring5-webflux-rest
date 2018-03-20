@@ -75,11 +75,26 @@ public class VendorControllerTest {
     }
 
     @Test
-    public void testPatchVendorWithChanges() {
+    public void testPatchVendorWithNameChanges() {
         given(vendorRepository.findById("someid")).willReturn(Mono.just(Vendor.builder().build()));
         given(vendorRepository.save(any(Vendor.class))).willReturn(Mono.just(Vendor.builder().build
                 ()));
         Mono<Vendor> vendToUpdateMono = Mono.just(Vendor.builder().name("Some Vendor").build());
+        webTestClient
+                .patch()
+                .uri("/api/v1/vendors/someid")
+                .body(vendToUpdateMono, Vendor.class)
+                .exchange()
+                .expectStatus()
+                .isOk();
+        verify(vendorRepository).save(any());
+    }
+    @Test
+    public void testPatchVendorWithLastNameChanges() {
+        given(vendorRepository.findById("someid")).willReturn(Mono.just(Vendor.builder().build()));
+        given(vendorRepository.save(any(Vendor.class))).willReturn(Mono.just(Vendor.builder().build
+                ()));
+        Mono<Vendor> vendToUpdateMono = Mono.just(Vendor.builder().lastName("Some Vendor").build());
         webTestClient
                 .patch()
                 .uri("/api/v1/vendors/someid")
